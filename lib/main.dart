@@ -81,8 +81,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   DateTime? selectedBirthdate;
   int? calculatedAge;
 
-  List<String> addressOptions = ["New York", "Los Angeles", "Chicago", "Houston", "Miami"];
-  List<String> purposeOptions = ["Work", "Education", "Tourism", "Business", "Other"];
+  List<String> addressOptions = ["Purok 1", "Purok 2", "Purok 3", "Purok 4", "Purok 5", 
+  "Purok 6", "Purok 7", "Purok 8", "PLDT Subdivision", "Country Homes Subd.", "Vista Rosa"];
+  List<String> purposeOptions = ["Indigency", "Clearance", "Residency", "Certificate", "ID", 
+  "Incident Report", "Accident Report"];
 
   @override
   void initState() {
