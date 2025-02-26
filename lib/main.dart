@@ -94,7 +94,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Future<void> _selectBirthdate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: selectedBirthdate ?? DateTime.now(), // Keeps last selection
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
@@ -117,6 +117,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void saveUserData() {
+    if (surnameController.text.isEmpty || selectedPurpose == null || selectedAddress == null || selectedBirthdate == null) {
+    print("⚠️ Missing required fields!");
+    return;
+  }
     FirebaseFirestore.instance.collection('users').add({
       'surname': surnameController.text,
       'firstName': firstNameController.text,
@@ -127,9 +131,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       'age': calculatedAge,
       'timestamp': FieldValue.serverTimestamp(),
     }).then((value) {
-      print("User data saved!");
+      print("✅ User data saved!");
     }).catchError((error) {
-      print("Failed to save user data: $error");
+      print("❌ Failed to save user data: $error");
     });
   }
 
@@ -219,12 +223,31 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         },
       );
     } else if (step == 3) {
-      questionText = "Araw ng kapanganakan";
-      inputWidget = ElevatedButton(
+  questionText = "Araw ng kapanganakan";
+  inputWidget = Column(
+    children: [
+      ElevatedButton(
         onPressed: () => _selectBirthdate(context),
         child: Text("Pumili ng araw"),
-      );
-    }
+      ),
+      SizedBox(height: 10),
+      if (selectedBirthdate != null) // Show selected date & age
+        Column(
+          children: [
+            Text(
+              "Napili mong petsa: ${selectedBirthdate!.toLocal()}".split(' ')[0],
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Text(
+              "Edad: ${calculatedAge ?? '-'} taon",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+    ],
+  );
+}
 
     return Scaffold(
       body: Column(
