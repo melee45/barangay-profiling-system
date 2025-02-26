@@ -117,6 +117,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void saveUserData() {
+    print("Attempting to save data:");
+    print("Surname: ${surnameController.text}");
+    print("Purpose: $selectedPurpose");
+    print("Address: $selectedAddress");
+    print("Birthdate: $selectedBirthdate");
+    print("Calculated Age: $calculatedAge");
+    
     if (surnameController.text.isEmpty || selectedPurpose == null || selectedAddress == null || selectedBirthdate == null) {
     print("⚠️ Missing required fields!");
     return;
