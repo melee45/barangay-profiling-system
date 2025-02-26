@@ -18,7 +18,8 @@ class MyApp extends StatelessWidget {
 // Initial Welcome Screen with Animation
 class WelcomeAnimationScreen extends StatefulWidget {
   @override
-  _WelcomeAnimationScreenState createState() => _WelcomeAnimationScreenState();
+  _WelcomeAnimationScreenState createState() =>
+      _WelcomeAnimationScreenState();
 }
 
 class _WelcomeAnimationScreenState extends State<WelcomeAnimationScreen> {
@@ -34,12 +35,6 @@ class _WelcomeAnimationScreenState extends State<WelcomeAnimationScreen> {
     });
 
     Future.delayed(Duration(seconds: 3), () {
-      setState(() {
-        opacity = 0.0;
-      });
-    });
-
-    Future.delayed(Duration(seconds: 4), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => WelcomeScreen()),
@@ -56,7 +51,8 @@ class _WelcomeAnimationScreenState extends State<WelcomeAnimationScreen> {
           duration: Duration(seconds: 2),
           child: Text(
             "Welcome!",
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.blue),
+            style: TextStyle(
+                fontSize: 32, fontWeight: FontWeight.bold, color: Colors.blue),
           ),
         ),
       ),
@@ -64,14 +60,13 @@ class _WelcomeAnimationScreenState extends State<WelcomeAnimationScreen> {
   }
 }
 
-// Main Registration Screen with Smooth Transitions
+// Main Registration Screen
 class WelcomeScreen extends StatefulWidget {
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  double opacity = 0.0;
   int step = 0;
   TextEditingController surnameController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
@@ -81,31 +76,33 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   DateTime? selectedBirthdate;
   int? calculatedAge;
 
-  List<String> addressOptions = ["Purok 1", "Purok 2", "Purok 3", "Purok 4", "Purok 5", 
-  "Purok 6", "Purok 7", "Purok 8", "PLDT Subdivision", "Country Homes Subd.", "Vista Rosa"];
-  List<String> purposeOptions = ["Indigency", "Clearance", "Residency", "Certificate", "ID", 
-  "Incident Report", "Accident Report"];
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration(seconds: 1), () {
-      setState(() {
-        opacity = 1.0;
-      });
-    });
-  }
+  List<String> addressOptions = [
+    "Purok 1",
+    "Purok 2",
+    "Purok 3",
+    "Purok 4",
+    "Purok 5",
+    "Purok 6",
+    "Purok 7",
+    "Purok 8",
+    "PLDT Subdivision",
+    "Country Homes Subd.",
+    "Vista Rosa"
+  ];
+  List<String> purposeOptions = [
+    "Indigency",
+    "Clearance",
+    "Residency",
+    "Certificate",
+    "ID",
+    "Incident Report",
+    "Accident Report",
+    "Other"
+  ];
 
   void goToNextStep() {
     setState(() {
-      opacity = 0.0;
-    });
-
-    Future.delayed(Duration(seconds: 1), () {
-      setState(() {
-        step++;
-        opacity = 1.0;
-      });
+      step++;
     });
   }
 
@@ -128,7 +125,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   int _calculateAge(DateTime birthdate) {
     DateTime today = DateTime.now();
     int age = today.year - birthdate.year;
-    if (today.month < birthdate.month || (today.month == birthdate.month && today.day < birthdate.day)) {
+    if (today.month < birthdate.month ||
+        (today.month == birthdate.month && today.day < birthdate.day)) {
       age--;
     }
     return age;
@@ -137,28 +135,54 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     String questionText = "";
-    Widget inputWidget;
+    Widget inputWidget = SizedBox();
 
     if (step == 0) {
-      questionText = "What is your surname?";
-      inputWidget = TextField(
-        controller: surnameController,
-        decoration: InputDecoration(border: OutlineInputBorder(), hintText: "Enter your surname"),
+      questionText = "Dahilan ng iyong pagpunta";
+      inputWidget = DropdownButtonFormField<String>(
+        value: selectedPurpose,
+        items: purposeOptions.map((String purpose) {
+          return DropdownMenuItem(value: purpose, child: Text(purpose));
+        }).toList(),
+        onChanged: (String? newValue) {
+          setState(() {
+            selectedPurpose = newValue;
+          });
+        },
+        decoration:
+            InputDecoration(border: OutlineInputBorder(), hintText: "Pumili"),
       );
     } else if (step == 1) {
-      questionText = "What is your first name?";
-      inputWidget = TextField(
-        controller: firstNameController,
-        decoration: InputDecoration(border: OutlineInputBorder(), hintText: "Enter your first name"),
+      questionText = "Kumpletuhin ang sumusunod";
+      inputWidget = Column(
+        children: [
+          TextField(
+            controller: surnameController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: "Apelyido",
+            ),
+          ),
+          SizedBox(height: 10),
+          TextField(
+            controller: firstNameController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: "Pangalan",
+            ),
+          ),
+          SizedBox(height: 10),
+          TextField(
+            controller: middleNameController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: "Gitnang Pangalan",
+            ),
+          ),
+        ],
       );
     } else if (step == 2) {
-      questionText = "What is your middle name?";
-      inputWidget = TextField(
-        controller: middleNameController,
-        decoration: InputDecoration(border: OutlineInputBorder(), hintText: "Enter your middle name"),
-      );
-    } else if (step == 3) {
-      questionText = "What is your address?";
+      questionText = "Barangay ng pagkakakilanlan";
       inputWidget = DropdownButtonFormField<String>(
         value: selectedAddress,
         items: addressOptions.map((String address) {
@@ -169,10 +193,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             selectedAddress = newValue;
           });
         },
-        decoration: InputDecoration(border: OutlineInputBorder(), hintText: "Select your address"),
+        decoration:
+            InputDecoration(border: OutlineInputBorder(), hintText: "Pumili"),
       );
-    } else if (step == 4) {
-      questionText = "What is your birthdate?";
+    } else if (step == 3) {
+      questionText = "Araw ng kapanganakan";
       inputWidget = Column(
         children: [
           Text(
@@ -184,62 +209,65 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           SizedBox(height: 10),
           ElevatedButton(
             onPressed: () => _selectBirthdate(context),
-            child: Text("Pick a Date"),
+            child: Text("Pumili ng araw"),
           ),
         ],
       );
-    } else if (step == 5) {
-      questionText = "Your calculated age is:";
+    } else if (step == 4) {
+      questionText = "Ang iyong edad ay:";
       inputWidget = Center(
         child: Text(
-          calculatedAge == null ? "Age not available" : "$calculatedAge years old",
+          calculatedAge == null ? "Hindi masuri" : "$calculatedAge taong gulang",
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
       );
-    } else if (step == 6) {
-      questionText = "What is your purpose?";
-      inputWidget = DropdownButtonFormField<String>(
-        value: selectedPurpose,
-        items: purposeOptions.map((String purpose) {
-          return DropdownMenuItem(value: purpose, child: Text(purpose));
-        }).toList(),
-        onChanged: (String? newValue) {
-          setState(() {
-            selectedPurpose = newValue;
-          });
-        },
-        decoration: InputDecoration(border: OutlineInputBorder(), hintText: "Select your purpose"),
-      );
     } else {
       return Scaffold(
-        appBar: AppBar(title: Text("Hello Flutter!"), backgroundColor: Colors.blueAccent),
         body: Center(
-          child: Text("Thank you! Registration complete.", style: TextStyle(fontSize: 20)),
+          child: Text("Maraming Salamat sa pagkumpleto ng survey!",
+              style: TextStyle(fontSize: 20)),
         ),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text("Hello Flutter!"), backgroundColor: Colors.blueAccent),
-      body: Center(
-        child: AnimatedOpacity(
-          opacity: opacity,
-          duration: Duration(seconds: 1),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(questionText, style: TextStyle(fontSize: 20)),
-              SizedBox(height: 10),
-              SizedBox(width: 300, child: inputWidget),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: goToNextStep,
-                child: Text("Next"),
+      body: Column(
+        children: [
+          Expanded(
+            child: Center(  // Ensures centering of text and input fields
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center, // Centers vertically
+                crossAxisAlignment: CrossAxisAlignment.center, // Centers horizontally
+                children: [
+                  Text(
+                    questionText,
+                    style: TextStyle(fontSize: 20),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  SizedBox(
+                    width: 300, // Limit width
+                    child: inputWidget,
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: goToNextStep,
+                    child: Icon(Icons.arrow_forward),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: LinearProgressIndicator(
+              value: (step + 1) / 5,
+              backgroundColor: Colors.grey[300],
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+            ),
+          ),
+        ],
       ),
     );
   }
