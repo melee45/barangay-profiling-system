@@ -8,6 +8,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  print("Firebase initialized successfully!");
   runApp(MyApp());
 }
 
@@ -24,10 +25,10 @@ class MyApp extends StatelessWidget {
 class WelcomeAnimationScreen extends StatefulWidget {
   const WelcomeAnimationScreen({super.key});
   @override
-  _WelcomeAnimationScreenState createState() => _WelcomeAnimationScreenState();
+  WelcomeAnimationScreenState createState() => WelcomeAnimationScreenState();
 }
 
-class _WelcomeAnimationScreenState extends State<WelcomeAnimationScreen> {
+class WelcomeAnimationScreenState extends State<WelcomeAnimationScreen> {
   double opacity = 0.0;
   @override
   void initState() {
@@ -145,7 +146,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void goToNextStep() {
-    if (step == 4) {
+    if (step == 3) {
       saveUserData();
     }
     setState(() {
