@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "519399230930",
+    "project_id": "barangay-profiling-system",
+    "storage_bucket": "barangay-profiling-system.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519399230930:android:850ec57eb5e8b8fbc08c0b",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTUZ621eG-tOokS84nyL0KmKRxl_2lOXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // Ensure this file exists
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,16 +21,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Initial Welcome Screen with Animation
 class WelcomeAnimationScreen extends StatefulWidget {
+  const WelcomeAnimationScreen({super.key});
   @override
-  _WelcomeAnimationScreenState createState() =>
-      _WelcomeAnimationScreenState();
+  _WelcomeAnimationScreenState createState() => _WelcomeAnimationScreenState();
 }
 
 class _WelcomeAnimationScreenState extends State<WelcomeAnimationScreen> {
   double opacity = 0.0;
-
   @override
   void initState() {
     super.initState();
@@ -33,7 +37,6 @@ class _WelcomeAnimationScreenState extends State<WelcomeAnimationScreen> {
         opacity = 1.0;
       });
     });
-
     Future.delayed(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
@@ -41,7 +44,6 @@ class _WelcomeAnimationScreenState extends State<WelcomeAnimationScreen> {
       );
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +54,10 @@ class _WelcomeAnimationScreenState extends State<WelcomeAnimationScreen> {
           child: Text(
             "Welcome!",
             style: TextStyle(
-                fontSize: 32, fontWeight: FontWeight.bold, color: Colors.blue),
+              fontSize: 32, 
+              fontWeight: FontWeight.bold, 
+              color: Colors.blue,
+            ),
           ),
         ),
       ),
@@ -60,8 +65,8 @@ class _WelcomeAnimationScreenState extends State<WelcomeAnimationScreen> {
   }
 }
 
-// Main Registration Screen
 class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({super.key});
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
@@ -77,34 +82,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   int? calculatedAge;
 
   List<String> addressOptions = [
-    "Purok 1",
-    "Purok 2",
-    "Purok 3",
-    "Purok 4",
-    "Purok 5",
-    "Purok 6",
-    "Purok 7",
-    "Purok 8",
-    "PLDT Subdivision",
-    "Country Homes Subd.",
-    "Vista Rosa"
+    "Purok 1", "Purok 2", "Purok 3", "Purok 4", "Purok 5",
+    "Purok 6", "Purok 7", "Purok 8", "PLDT Subdivision",
+    "Country Homes Subd.", "Vista Rosa"
   ];
   List<String> purposeOptions = [
-    "Indigency",
-    "Clearance",
-    "Residency",
-    "Certificate",
-    "ID",
-    "Incident Report",
-    "Accident Report",
-    "Other"
+    "Indigency", "Clearance", "Residency", "Certificate",
+    "ID", "Incident Report", "Accident Report", "Other"
   ];
-
-  void goToNextStep() {
-    setState(() {
-      step++;
-    });
-  }
 
   Future<void> _selectBirthdate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
@@ -113,7 +98,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
-
     if (pickedDate != null) {
       setState(() {
         selectedBirthdate = pickedDate;
@@ -132,8 +116,50 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return age;
   }
 
+  void saveUserData() {
+    FirebaseFirestore.instance.collection('users').add({
+      'surname': surnameController.text,
+      'firstName': firstNameController.text,
+      'middleName': middleNameController.text,
+      'address': selectedAddress,
+      'purpose': selectedPurpose,
+      'birthdate': selectedBirthdate?.toIso8601String(),
+      'age': calculatedAge,
+      'timestamp': FieldValue.serverTimestamp(),
+    }).then((value) {
+      print("User data saved!");
+    }).catchError((error) {
+      print("Failed to save user data: $error");
+    });
+  }
+
+  void goToNextStep() {
+    if (step == 4) {
+      saveUserData();
+    }
+    setState(() {
+      step++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // When survey is complete, display a thank-you screen with larger text.
+    if (step > 3) {
+      return Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              "Maraming Salamat sa pagkumpleto ng survey!",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+    }
+
     String questionText = "";
     Widget inputWidget = SizedBox();
 
@@ -149,8 +175,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             selectedPurpose = newValue;
           });
         },
-        decoration:
-            InputDecoration(border: OutlineInputBorder(), hintText: "Pumili"),
       );
     } else if (step == 1) {
       questionText = "Kumpletuhin ang sumusunod";
@@ -193,41 +217,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             selectedAddress = newValue;
           });
         },
-        decoration:
-            InputDecoration(border: OutlineInputBorder(), hintText: "Pumili"),
       );
     } else if (step == 3) {
       questionText = "Araw ng kapanganakan";
-      inputWidget = Column(
-        children: [
-          Text(
-            selectedBirthdate == null
-                ? "No date selected"
-                : "${selectedBirthdate!.month}/${selectedBirthdate!.day}/${selectedBirthdate!.year}",
-            style: TextStyle(fontSize: 18),
-          ),
-          SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () => _selectBirthdate(context),
-            child: Text("Pumili ng araw"),
-          ),
-        ],
-      );
-    } else if (step == 4) {
-      questionText = "Ang iyong edad ay:";
-      inputWidget = Center(
-        child: Text(
-          calculatedAge == null ? "Hindi masuri" : "$calculatedAge taong gulang",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
-        ),
-      );
-    } else {
-      return Scaffold(
-        body: Center(
-          child: Text("Maraming Salamat sa pagkumpleto ng survey!",
-              style: TextStyle(fontSize: 20)),
-        ),
+      inputWidget = ElevatedButton(
+        onPressed: () => _selectBirthdate(context),
+        child: Text("Pumili ng araw"),
       );
     }
 
@@ -235,27 +230,37 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       body: Column(
         children: [
           Expanded(
-            child: Center(  // Ensures centering of text and input fields
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center, // Centers vertically
-                crossAxisAlignment: CrossAxisAlignment.center, // Centers horizontally
-                children: [
-                  Text(
-                    questionText,
-                    style: TextStyle(fontSize: 20),
-                    textAlign: TextAlign.center,
+            child: Center(
+              child: SingleChildScrollView(
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: 500),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            questionText,
+                            style: TextStyle(fontSize: 20),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 20),
+                          inputWidget,
+                          SizedBox(height: 20),
+                          Align(
+                            alignment: Alignment.center,
+                            child: ElevatedButton(
+                              onPressed: goToNextStep,
+                              child: Icon(Icons.arrow_forward),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  SizedBox(height: 20),
-                  SizedBox(
-                    width: 300, // Limit width
-                    child: inputWidget,
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: goToNextStep,
-                    child: Icon(Icons.arrow_forward),
-                  ),
-                ],
+                ),
               ),
             ),
           ),

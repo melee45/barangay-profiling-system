@@ -1,16 +1,1 @@
-{
-  "hosting": {
-    "public": "build/web",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
-  }
-}
+{"hosting":{"public":"build/web","ignore":["firebase.json","**/.*","**/node_modules/**"],"rewrites":[{"source":"**","destination":"/index.html"}]},"flutter":{"platforms":{"android":{"default":{"projectId":"barangay-profiling-system","appId":"1:519399230930:android:850ec57eb5e8b8fbc08c0b","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"barangay-profiling-system","configurations":{"android":"1:519399230930:android:850ec57eb5e8b8fbc08c0b","ios":"1:519399230930:ios:dca265820b0c2f6cc08c0b","macos":"1:519399230930:ios:dca265820b0c2f6cc08c0b","web":"1:519399230930:web:a40f1f0e787cf209c08c0b","windows":"1:519399230930:web:e196989e66cffd2cc08c0b"}}}}}}
