@@ -236,17 +236,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     children: [
       ElevatedButton(
         onPressed: () => _selectBirthdate(context),
-        child: Text("Pumili ng araw"),
+        child: Text(selectedBirthdate == null
+            ? "Pumili ng araw"
+            : "${selectedBirthdate!.toLocal()}".split(' ')[0]),
       ),
       SizedBox(height: 10),
       if (selectedBirthdate != null) // Show selected date & age
         Column(
           children: [
-            Text(
-              "Napili mong petsa: ${selectedBirthdate!.toLocal()}".split(' ')[0],
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 5),
             Text(
               "Edad: ${calculatedAge ?? '-'} taon",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
