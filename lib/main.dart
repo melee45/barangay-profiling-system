@@ -309,7 +309,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       ],
     );
     } else if (step == 5) {
-      questionText = "Katayuan ng Hanapbujay";
+      questionText = "Katayuan ng Hanapbuhay";
       inputWidget = DropdownButtonFormField<String>(
         value: selectedOccupation,
         items: occupationoptions.map((String occupation) {
