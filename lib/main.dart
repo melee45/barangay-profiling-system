@@ -88,7 +88,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   List<String> addressOptions = [
     "Purok 1", "Purok 2", "Purok 3", "Purok 4", "Purok 5",
     "Purok 6", "Purok 7", "Purok 8", "PLDT Subdivision",
-    "Country Homes Subd.", "Vista Rosa"
+    "Country Homes Subd.", "Vista Rosa", "Labas ng Biñan"
   ];
   List<String> purposeOptions = [
     "Indigency", "Clearance", "Residency", "Certificate",
@@ -195,7 +195,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     Widget inputWidget = SizedBox();
  
     if (step == 0) {
-      questionText = "Dahilan ng iyong pagpunta";
+      questionText = "Kung ikaw ay pupunta sa institusyon ng pamahalaan, ano and mas uunahin mong kunin";
       inputWidget = DropdownButtonFormField<String>(
         value: selectedPurpose,
         items: purposeOptions.map((String purpose) {
