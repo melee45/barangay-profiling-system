@@ -195,7 +195,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     Widget inputWidget = SizedBox();
  
     if (step == 0) {
-      questionText = "Kung ikaw ay pupunta sa institusyon ng pamahalaan, ano and mas uunahin mong kunin";
+      questionText = "Kung ikaw ay pupunta sa institusyon ng pamahalaan, ano ang mas uunahin mong kunin";
       inputWidget = DropdownButtonFormField<String>(
         value: selectedPurpose,
         items: purposeOptions.map((String purpose) {
